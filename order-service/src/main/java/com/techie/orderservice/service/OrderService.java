@@ -22,7 +22,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
 
-    private final WebClient webClient;
+    private final WebClient.Builder webClientBuilder;
 
     public void placeOrder(OrderRequest orderRequest){
         Order order = new Order();
@@ -43,11 +43,10 @@ public class OrderService {
                 .collect(Collectors.toList());
 
         // Call the inventory service and get the response whether stock is there or not
-        InventoryResponse[] inventoryResponseArr = webClient.get()
-                .uri("http://localhost:8083/api/inventory",
+        InventoryResponse[] inventoryResponseArr = webClientBuilder.build().get()
+                .uri("http://inventory-service/api/inventory",
                         uriBuilder ->
-                            uriBuilder.queryParam("skuCode",skuCodes).build()
-                    )
+                            uriBuilder.queryParam("skuCode",skuCodes).build())
                 .retrieve()
                 .bodyToMono(InventoryResponse[].class)
                 .block();
