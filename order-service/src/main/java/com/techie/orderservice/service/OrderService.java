@@ -14,6 +14,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,7 +25,7 @@ public class OrderService {
 
     private final WebClient.Builder webClientBuilder;
 
-    public void placeOrder(OrderRequest orderRequest){
+    public String placeOrder(OrderRequest orderRequest){
         Order order = new Order();
         order.setOrderNumber(UUID.randomUUID().toString());
 
@@ -58,6 +59,8 @@ public class OrderService {
             orderRepository.save(order);
         else
             throw new IllegalArgumentException("One or More products is not in stock...");
+
+        return "Order Placed Successfully";
     }
 
     private OrderLineItems mapToDto(OrderLineItemsDto request) {
